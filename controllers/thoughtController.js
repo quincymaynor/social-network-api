@@ -1,7 +1,7 @@
 const { Thought, User } = require('../models');
 
 module.exports = {
-  // Get all Thoughts
+  // get all Thoughts
   async getThoughts(req, res) {
     try {
       const thoughts = await Thought.find();
@@ -10,7 +10,7 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // Get a Thought
+  // get a Thought
   async getSingleThought(req, res) {
     try {
       const thought = await Thought.findOne({ _id: req.params.thoughtId })
@@ -25,7 +25,7 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // Create a Thought
+  // create a Thought
   async createThought(req, res) {
     try {
       const thought = await Thought.create(req.body);
@@ -35,7 +35,7 @@ module.exports = {
       return res.status(500).json(err);
     }
   },
-  // Delete a Thought
+  // delete a Thought
   async deleteThought(req, res) {
     try {
       const thought = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
@@ -50,7 +50,7 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // Update a Thought
+  // update a Thought
   async updateThought(req, res) {
     try {
       const thought = await Thought.findOneAndUpdate(
@@ -68,4 +68,49 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+
+  // add a reaction to a thought
+  async addReaction(req, res) {
+    console.log('You are adding a reaction');
+
+    try {
+      const thought = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $addToSet: req.body },
+        { runValidators: true, new: true }
+      );
+
+      if (!thought) {
+        return res
+          .status(404)
+          .json({ message: 'No thought found with that ID' });
+      }
+
+      res.json(thought);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+  // remove a reaction from a thought
+  async removeReaction(req, res) {
+    try {
+      const thought = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $pull: { reactions: req.params.reactionId  } },
+        { runValidators: true, new: true }
+      );
+
+      console.log(thought);
+
+      if (!thought) {
+        return res
+          .status(404)
+          .json({ message: 'No thought found with that ID' });
+      }
+
+      res.json(thought);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  }  
 };

@@ -1,7 +1,7 @@
 const User = require('../models/user');
 
 module.exports = {
-  // Get all Users
+  // get all Users
   async getUsers(req, res) {
     try {
       const users = await User.find();
@@ -12,7 +12,7 @@ module.exports = {
       return res.status(500).json(err);
     }
   },
-  // Get a single User
+  // get a single User
   async getSingleUser(req, res) {
     try {
       const user = await User.findOne({ _id: req.params.userId })
@@ -38,7 +38,7 @@ module.exports = {
       console.log(err)
     }
   },
-  // Delete a User
+  // delete a User
   async deleteUser(req, res) {
     try {
       const user = await User.findOneAndRemove({ _id: req.params.userId });
@@ -53,7 +53,7 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // Update a User
+  // update a User
   async updateUser(req, res) {
     try {
       const user = await User.findOneAndUpdate(
@@ -72,7 +72,7 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // Add an friend to a User
+  // add friend to a User
   async addFriend(req, res) {
     console.log('You are adding an friend');
 
@@ -94,11 +94,8 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // Remove friend from a User
+  // remove friend from a User
   async removeFriend(req, res) {
-    console.log(req.params);
-    console.log(req.params.friendId);
-
     try {
       const user = await User.findOneAndUpdate(
         { _id: req.params.userId },
